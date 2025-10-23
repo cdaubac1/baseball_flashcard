@@ -1,9 +1,9 @@
 const TEAMS_DATA = {
-  'Yankees': [
+  'Long Island Ducks': [
     {
-      batter: 'Aaron Judge',
+      batter: 'Chris Roller',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 0-0',
       battingOrder: 1,
@@ -25,9 +25,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider away → Changeup down'
     },
     {
-      batter: 'Juan Soto',
+      batter: 'River Town',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 0-1',
       battingOrder: 2,
@@ -50,9 +50,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball up → Curve bury'
     },
     {
-      batter: 'Anthony Rizzo',
+      batter: 'Ronaldo FLores',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 0-2',
       battingOrder: 3,
@@ -70,9 +70,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider down → Fastball in'
     },
     {
-      batter: 'Giancarlo Stanton',
+      batter: 'Nate Scantlin',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 0-0',
       battingOrder: 4,
@@ -90,9 +90,9 @@ const TEAMS_DATA = {
       powerSequence: 'Changeup low → Fastball up'
     },
     {
-      batter: 'Gleyber Torres',
+      batter: 'Justin Wylie',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 1-0',
       battingOrder: 5,
@@ -110,9 +110,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball away → Slider down'
     },
     {
-      batter: 'Anthony Volpe',
+      batter: 'Cole Roederer',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 2-0',
       battingOrder: 6,
@@ -130,9 +130,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider away → Changeup down'
     },
     {
-      batter: 'DJ LeMahieu',
+      batter: 'Carter Aldrete',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 0-0',
       battingOrder: 7,
@@ -150,9 +150,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball in → Slider away'
     },
     {
-      batter: 'Jose Trevino',
+      batter: 'Carter Aldrete',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 1-0',
       battingOrder: 8,
@@ -170,9 +170,9 @@ const TEAMS_DATA = {
       powerSequence: 'Changeup down → Fastball up'
     },
     {
-      batter: 'Harrison Bader',
+      batter: 'Dalton Guthrie',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 2-0',
       battingOrder: 9,
@@ -190,11 +190,11 @@ const TEAMS_DATA = {
       powerSequence: 'Slider down → Fastball in'
     }
   ],
-  'Red Sox': [
+  'Gastonia Ghost Peppers': [
     {
-      batter: 'Rafael Devers',
+      batter: 'Dalton Guthrie',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 0-0',
       battingOrder: 1,
@@ -212,9 +212,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball up → Slider away'
     },
     {
-      batter: 'Trevor Story',
+      batter: 'Aaron Antonini',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 0-1',
       battingOrder: 2,
@@ -232,9 +232,9 @@ const TEAMS_DATA = {
       powerSequence: 'Changeup down → Fastball in'
     },
     {
-      batter: 'Justin Turner',
+      batter: 'Taylor Kohlwey',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 1st, 1-1',
       battingOrder: 3,
@@ -252,9 +252,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider away → Fastball up'
     },
     {
-      batter: 'Masataka Yoshida',
+      batter: 'Cody Thomas',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 0-0',
       battingOrder: 4,
@@ -272,9 +272,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball in → Changeup away'
     },
     {
-      batter: 'Jarren Duran',
+      batter: 'Troy Viola',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 0-1',
       battingOrder: 5,
@@ -292,9 +292,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider down → Fastball up'
     },
     {
-      batter: 'Enrique Hernandez',
+      batter: 'Eric De La Rosa',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 2nd, 1-1',
       battingOrder: 6,
@@ -312,9 +312,9 @@ const TEAMS_DATA = {
       powerSequence: 'Changeup away → Fastball in'
     },
     {
-      batter: 'Connor Wong',
+      batter: 'Narciso Crook',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 0-0',
       battingOrder: 7,
@@ -332,9 +332,9 @@ const TEAMS_DATA = {
       powerSequence: 'Slider down → Fastball up'
     },
     {
-      batter: 'Ceddanne Rafaela',
+      batter: 'Jack Reinheimer',
       handedness: 'RHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 0-1',
       battingOrder: 8,
@@ -352,9 +352,9 @@ const TEAMS_DATA = {
       powerSequence: 'Fastball away → Slider in'
     },
     {
-      batter: 'David Hamilton',
+      batter: 'Kole Kaler',
       handedness: 'LHB',
-      pitcher: 'John Doe',
+      pitcher: 'Tim Melville',
       pitcherThrows: 'RHP',
       context: 'Top 3rd, 1-1',
       battingOrder: 9,
