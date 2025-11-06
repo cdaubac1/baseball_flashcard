@@ -1,382 +1,9 @@
-const TEAMS_DATA = {
-  'Long Island Ducks': [
-    {
-      batter: 'Chris Roller',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 0-0',
-      battingOrder: 1,
-      pitchZones: [
-        { position: [15, 80], type: 'good', pitch: 'C' },
-        { position: [85, 25], type: 'good', pitch: 'S' },
-        { position: [85, 15], type: 'good', pitch: 'F' },
-        { position: [85, 85], type: 'good', pitch: 'C' },
-        { position: [15, 25], type: 'good', pitch: 'CH' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-        { position: [35, 65], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Low',
-        stealThreat: 'Medium',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Slider away → Changeup down'
-    },
-    {
-      batter: 'River Town',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 0-1',
-      battingOrder: 2,
-      pitchZones: [
-        { position: [20, 75], type: 'good', pitch: 'C' },
-        { position: [80, 20], type: 'good', pitch: 'F' },
-        { position: [80, 80], type: 'good', pitch: 'S' },
-        { position: [20, 20], type: 'good', pitch: 'C' },
-        { position: [65, 50], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-        { position: [35, 35], type: 'bad', pitch: 'F' },
-        { position: [65, 75], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Very Low',
-        stealThreat: 'Low',
-        spray: 'All fields'
-      },
-      powerSequence: 'Fastball up → Curve bury'
-    },
-    {
-      batter: 'Ronaldo FLores',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 0-2',
-      battingOrder: 3,
-      pitchZones: [
-        { position: [25, 70], type: 'good', pitch: 'S' },
-        { position: [75, 30], type: 'good', pitch: 'F' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Slider down → Fastball in'
-    },
-    {
-      batter: 'Nate Scantlin',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 0-0',
-      battingOrder: 4,
-      pitchZones: [
-        { position: [15, 15], type: 'good', pitch: 'S' },
-        { position: [85, 85], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Very Low',
-        stealThreat: 'Very Low',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Changeup low → Fastball up'
-    },
-    {
-      batter: 'Justin Wylie',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 1-0',
-      battingOrder: 5,
-      pitchZones: [
-        { position: [30, 60], type: 'good', pitch: 'C' },
-        { position: [70, 40], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'Medium',
-        spray: 'Gap to gap'
-      },
-      powerSequence: 'Fastball away → Slider down'
-    },
-    {
-      batter: 'Cole Roederer',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 2-0',
-      battingOrder: 6,
-      pitchZones: [
-        { position: [20, 80], type: 'good', pitch: 'C' },
-        { position: [80, 20], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Medium',
-        stealThreat: 'High',
-        spray: 'All fields'
-      },
-      powerSequence: 'Slider away → Changeup down'
-    },
-    {
-      batter: 'Carter Aldrete',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 0-0',
-      battingOrder: 7,
-      pitchZones: [
-        { position: [35, 65], type: 'good', pitch: 'C' },
-        { position: [65, 35], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'All fields'
-      },
-      powerSequence: 'Fastball in → Slider away'
-    },
-    {
-      batter: 'Carter Aldrete',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 1-0',
-      battingOrder: 8,
-      pitchZones: [
-        { position: [25, 75], type: 'good', pitch: 'C' },
-        { position: [75, 25], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'Gap to gap'
-      },
-      powerSequence: 'Changeup down → Fastball up'
-    },
-    {
-      batter: 'Dalton Guthrie',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 2-0',
-      battingOrder: 9,
-      pitchZones: [
-        { position: [40, 60], type: 'good', pitch: 'C' },
-        { position: [60, 40], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'High',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Slider down → Fastball in'
-    }
-  ],
-  'Gastonia Ghost Peppers': [
-    {
-      batter: 'Dalton Guthrie',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 0-0',
-      battingOrder: 1,
-      pitchZones: [
-        { position: [20, 70], type: 'good', pitch: 'S' },
-        { position: [80, 30], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Very Low',
-        stealThreat: 'Low',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Fastball up → Slider away'
-    },
-    {
-      batter: 'Aaron Antonini',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 0-1',
-      battingOrder: 2,
-      pitchZones: [
-        { position: [25, 75], type: 'good', pitch: 'C' },
-        { position: [75, 25], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'Medium',
-        spray: 'All fields'
-      },
-      powerSequence: 'Changeup down → Fastball in'
-    },
-    {
-      batter: 'Taylor Kohlwey',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 1st, 1-1',
-      battingOrder: 3,
-      pitchZones: [
-        { position: [30, 70], type: 'good', pitch: 'S' },
-        { position: [70, 30], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'Opposite field'
-      },
-      powerSequence: 'Slider away → Fastball up'
-    },
-    {
-      batter: 'Cody Thomas',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 0-0',
-      battingOrder: 4,
-      pitchZones: [
-        { position: [20, 80], type: 'good', pitch: 'C' },
-        { position: [80, 20], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'All fields'
-      },
-      powerSequence: 'Fastball in → Changeup away'
-    },
-    {
-      batter: 'Troy Viola',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 0-1',
-      battingOrder: 5,
-      pitchZones: [
-        { position: [15, 85], type: 'good', pitch: 'S' },
-        { position: [85, 15], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Medium',
-        stealThreat: 'High',
-        spray: 'Gap to gap'
-      },
-      powerSequence: 'Slider down → Fastball up'
-    },
-    {
-      batter: 'Eric De La Rosa',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 2nd, 1-1',
-      battingOrder: 6,
-      pitchZones: [
-        { position: [35, 65], type: 'good', pitch: 'C' },
-        { position: [65, 35], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Low',
-        stealThreat: 'Medium',
-        spray: 'All fields'
-      },
-      powerSequence: 'Changeup away → Fastball in'
-    },
-    {
-      batter: 'Narciso Crook',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 0-0',
-      battingOrder: 7,
-      pitchZones: [
-        { position: [25, 75], type: 'good', pitch: 'S' },
-        { position: [75, 25], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'Low',
-        stealThreat: 'Low',
-        spray: 'Pull hitter'
-      },
-      powerSequence: 'Slider down → Fastball up'
-    },
-    {
-      batter: 'Jack Reinheimer',
-      handedness: 'RHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 0-1',
-      battingOrder: 8,
-      pitchZones: [
-        { position: [40, 60], type: 'good', pitch: 'C' },
-        { position: [60, 40], type: 'good', pitch: 'S' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Swings',
-        buntThreat: 'Medium',
-        stealThreat: 'High',
-        spray: 'All fields'
-      },
-      powerSequence: 'Fastball away → Slider in'
-    },
-    {
-      batter: 'Kole Kaler',
-      handedness: 'LHB',
-      pitcher: 'Tim Melville',
-      pitcherThrows: 'RHP',
-      context: 'Top 3rd, 1-1',
-      battingOrder: 9,
-      pitchZones: [
-        { position: [30, 70], type: 'good', pitch: 'S' },
-        { position: [70, 30], type: 'good', pitch: 'C' },
-        { position: [50, 50], type: 'bad', pitch: 'F' },
-      ],
-      tendencies: {
-        firstStrike: 'Takes',
-        buntThreat: 'High',
-        stealThreat: 'High',
-        spray: 'Gap to gap'
-      },
-      powerSequence: 'Changeup down → Fastball up'
-    }
-  ]
-};
+let TEAMS_DATA = {};
+let METADATA = null;
 
 function createElement(tag, props = {}, ...children) {
   const el = document.createElement(tag);
-  
+
   Object.entries(props).forEach(([key, value]) => {
     if (key === 'className') {
       el.className = value;
@@ -388,67 +15,164 @@ function createElement(tag, props = {}, ...children) {
       el.setAttribute(key, value);
     }
   });
-  
+
   children.flat().forEach(child => {
     if (child != null) {
-      el.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
+      if (typeof child === 'string' || typeof child === 'number') {
+        el.appendChild(document.createTextNode(String(child)));
+      } else if (child instanceof Node) {
+        el.appendChild(child);
+      }
     }
   });
-  
+
   return el;
 }
 
 function createPitchZone(zones) {
-  return createElement('div', { className: 'pitch-zone' },
-    zones.map((zone, i) => {
-      const [x, y] = zone.position || [50, 50];
-      return createElement('div', {
-        className: `pitch-circle pitch-circle--${zone.type}`,
-        style: { left: `${x}%`, top: `${y}%` }
-      }, zone.pitch);
-    })
-  );
+  const safeZones = Array.isArray(zones) ? zones : [];
+  
+  let displayZones = safeZones;
+  if (safeZones.length > 10) {
+    const step = safeZones.length / 10;
+    displayZones = [];
+    for (let i = 0; i < 10; i++) {
+      const index = Math.floor(i * step);
+      displayZones.push(safeZones[index]);
+    }
+  }
+  
+  const pitchElements = displayZones.map(zone => {
+    const [x, y] = zone.position || [50, 50];
+    const pitchType = zone.pitch || 'F';
+    
+    const isGood = zone.good === true;
+    
+    const colorClass = isGood ? 'pitch-circle--good' : 'pitch-circle--bad';
+
+    return createElement('div', {
+      className: `pitch-circle ${colorClass}`,
+      style: { left: `${x}%`, top: `${y}%` },
+      title: `${pitchType} — ${isGood ? 'Attack here' : 'Avoid this location'}`
+    }, pitchType);
+  });
+
+  return createElement('div', { className: 'pitch-zone' }, ...pitchElements);
 }
 
-function createBatterGraphic(handedness, batterName) {
+function createBatterGraphic(handedness, batterName, pitchZones) {
   const isLeftHanded = handedness === 'LHB';
+  const totalPitches = Array.isArray(pitchZones) ? pitchZones.length : 0;
+  const handText = isLeftHanded ? 'LEFT-HANDED BATTER' : 'RIGHT-HANDED BATTER';
+
   return createElement('div', { className: 'batter-section' },
-    createElement('div', { 
-      className: 'batter-graphic',
-      style: { transform: isLeftHanded ? 'scaleX(-1)' : 'none' }
-    }),
+    createElement('div', { className: 'handedness-badge' }, handText),
     createElement('div', { className: 'batter-info' },
-      createElement('div', { className: 'batter-name' }, batterName),
-      createElement('div', { className: 'batter-details' }, 
-        `${handedness} • ${isLeftHanded ? 'Left-handed' : 'Right-handed'} Batter`)
+      createElement('div', { className: 'batter-name' }, batterName || 'Unknown'),
+      createElement('div', { className: 'batter-stats' },
+        `Total Pitches: ${totalPitches}`)
     )
   );
 }
 
-function createTendencies(tendencies, powerSequence) {
+function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
+  const safeStats = stats || {};
+  const swingRate = safeStats.totalPitches > 0
+    ? `${(safeStats.swings / safeStats.totalPitches * 100).toFixed(0)}%`
+    : 'N/A';
+
+  const contactRate = safeStats.swings > 0
+    ? `${(safeStats.contact / safeStats.swings * 100).toFixed(0)}%`
+    : 'N/A';
+
+  const whiffRate = safeStats.swings > 0
+    ? `${(safeStats.whiffs / safeStats.swings * 100).toFixed(0)}%`
+    : 'N/A';
+
+  const firstPitchSwingRate = safeStats.firstPitchPitches > 0
+    ? `${(safeStats.firstPitchSwings / safeStats.firstPitchPitches * 100).toFixed(0)}%`
+    : 'N/A';
+
+  const vulnerableZones = [];
+  const hotZones = [];
+  
+  if (zoneAnalysis) {
+    Object.entries(zoneAnalysis).forEach(([zone, stats]) => {
+      if (stats.swings > 3) {
+        const whiffPct = (stats.whiffs / stats.swings * 100);
+        const weakContactPct = stats.contact > 0 ? (stats.weakContact / stats.contact * 100) : 0;
+        const foulPct = (stats.fouls / stats.swings * 100);
+        const combinedVulnerability = whiffPct + (weakContactPct * 0.5) + (foulPct * 0.3);
+        
+        if (combinedVulnerability > 45) {
+          vulnerableZones.push({ zone, score: combinedVulnerability.toFixed(0) });
+        }
+        
+        const hardHitPct = stats.contact > 0 ? (stats.hardHits / stats.contact * 100) : 0;
+        if (hardHitPct > 40 && stats.hardHits >= 2) {
+          hotZones.push({ zone, hardHitPct: hardHitPct.toFixed(0) });
+        }
+      }
+    });
+  }
+
+  vulnerableZones.sort((a, b) => b.score - a.score);
+  hotZones.sort((a, b) => b.hardHitPct - a.hardHitPct);
+
   return createElement('div', { className: 'info-section' },
     createElement('div', { className: 'tendencies' },
-      createElement('h3', {}, 'Batter Tendencies'),
+      createElement('h3', {}, 'Batter Profile'),
       createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'First Strike'),
-        createElement('span', { className: 'tendency-value' }, tendencies.firstStrike)
+        createElement('span', { className: 'tendency-label' }, 'Whiff Rate'),
+        createElement('span', { className: 'tendency-value' }, whiffRate)
       ),
       createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Bunt Threat'),
-        createElement('span', { className: 'tendency-value' }, tendencies.buntThreat)
+        createElement('span', { className: 'tendency-label' }, 'Contact Rate'),
+        createElement('span', { className: 'tendency-value' }, contactRate)
       ),
       createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Steal Threat'),
-        createElement('span', { className: 'tendency-value' }, tendencies.stealThreat)
-      ),
-      createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Spray'),
-        createElement('span', { className: 'tendency-value' }, tendencies.spray)
+        createElement('span', { className: 'tendency-label' }, 'Swing Rate'),
+        createElement('span', { className: 'tendency-value' }, swingRate)
       )
     ),
+
+    createElement('div', { className: 'power-sequence stats-box' },
+      createElement('h4', {}, 'First-Pitch Approach'),
+      createElement('div', { className: 'power-sequence-text' }, 
+        tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`)
+    ),
+
+    vulnerableZones.length > 0 ? createElement('div', { className: 'power-sequence vulnerable-zone' },
+      createElement('h4', {}, '⚠️ Vulnerable Zones'),
+      createElement('div', { className: 'power-sequence-text' }, 
+        vulnerableZones.slice(0, 2).map(z => z.zone).join(', ') || 'Calculating...')
+    ) : null,
+
+    hotZones.length > 0 ? createElement('div', { className: 'power-sequence hot-zone' },
+      createElement('h4', {}, '🔥 Hot Zones (Avoid)'),
+      createElement('div', { className: 'power-sequence-text' }, 
+        hotZones.slice(0, 2).map(z => z.zone).join(', ') || 'None identified')
+    ) : null,
+
     createElement('div', { className: 'power-sequence' },
-      createElement('h4', {}, 'Two Pitch Combo'),
-      createElement('div', { className: 'power-sequence-text' }, powerSequence)
+      createElement('h4', {}, 'Strikeout Sequence'),
+      createElement('div', { className: 'power-sequence-text' }, powerSequence || 'Insufficient data')
+    ),
+
+    createElement('div', { className: 'power-sequence threat-box' },
+      createElement('h4', {}, 'Threats & Tendencies'),
+      createElement('div', { className: 'threat-item' },
+        createElement('span', { className: 'threat-label' }, '🏃 Steal:'),
+        createElement('span', { className: 'threat-value' }, tendencies?.stealThreat || 'Low')
+      ),
+      createElement('div', { className: 'threat-item' },
+        createElement('span', { className: 'threat-label' }, '🎯 Bunt:'),
+        createElement('span', { className: 'threat-value' }, tendencies?.buntThreat || 'Low')
+      ),
+      createElement('div', { className: 'threat-item' },
+        createElement('span', { className: 'threat-label' }, '⚾ Spray:'),
+        createElement('span', { className: 'threat-value' }, tendencies?.spray || 'All fields')
+      )
     )
   );
 }
@@ -456,158 +180,225 @@ function createTendencies(tendencies, powerSequence) {
 class FlashcardApp {
   constructor(container) {
     this.container = container;
-    this.currentScreen = 'teamSelect'; // 'teamSelect', 'lineup', 'flashcard'
+    this.currentScreen = 'dateSelect';
     this.selectedTeam = null;
     this.selectedBatterIndex = 0;
+    this.showInfoPanel = false;
     this.render();
   }
 
-  showTeamSelect() {
-    this.currentScreen = 'teamSelect';
-    this.selectedTeam = null;
+  toggleInfo() {
+    this.showInfoPanel = !this.showInfoPanel;
     this.render();
   }
 
-  showLineup(team) {
-    this.currentScreen = 'lineup';
-    this.selectedTeam = team;
-    this.render();
-  }
+  async loadDataRange(startDate, endDate) {
+    try {
+      this.currentScreen = 'loading';
+      this.loadingMessage = `Loading data from ${startDate} to ${endDate}...`;
+      this.render();
 
-  showFlashcard(batterIndex) {
-    this.currentScreen = 'flashcard';
-    this.selectedBatterIndex = batterIndex;
-    this.setupKeyboardListeners();
-    this.render();
-  }
+      const response = await fetch(
+        `http://localhost:3000/api/teams/range?startDate=${startDate}&endDate=${endDate}`
+      );
 
-  setupKeyboardListeners() {
-    if (this.keyboardHandler) {
-      window.removeEventListener('keydown', this.keyboardHandler);
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+
+      const data = await response.json();
+      TEAMS_DATA = data.teamsData;
+      METADATA = data.metadata;
+
+      this.currentScreen = 'teamSelect';
+      this.render();
+    } catch (err) {
+      console.error(err);
+      this.currentScreen = 'error';
+      this.error = err.message;
+      this.render();
     }
-    
-    this.keyboardHandler = (e) => {
+  }
+
+  showDateSelect() { this.currentScreen = 'dateSelect'; this.render(); }
+  showTeamSelect() { this.currentScreen = 'teamSelect'; this.selectedTeam = null; this.render(); }
+  showLineup(team) { 
+    this.currentScreen = 'lineup'; 
+    this.selectedTeam = team; 
+    this.render(); 
+  }
+  showFlashcard(index) { this.currentScreen = 'flashcard'; this.selectedBatterIndex = index; this.setupKeyboard(); this.render(); }
+
+  setupKeyboard() {
+    if (this.keyHandler) window.removeEventListener('keydown', this.keyHandler);
+    this.keyHandler = e => {
       if (this.currentScreen !== 'flashcard') return;
-      
       const lineup = TEAMS_DATA[this.selectedTeam];
       if (e.key === 'ArrowRight') {
-        this.selectedBatterIndex = Math.min(lineup.length - 1, this.selectedBatterIndex + 1);
+        this.selectedBatterIndex = (this.selectedBatterIndex + 1) % lineup.length;
         this.render();
-      }
-      if (e.key === 'ArrowLeft') {
-        this.selectedBatterIndex = Math.max(0, this.selectedBatterIndex - 1);
+      } else if (e.key === 'ArrowLeft') {
+        this.selectedBatterIndex = (this.selectedBatterIndex - 1 + lineup.length) % lineup.length;
         this.render();
       }
     };
-    
-    window.addEventListener('keydown', this.keyboardHandler);
+    window.addEventListener('keydown', this.keyHandler);
+  }
+
+  renderLoading() {
+    return createElement('div', { className: 'team-select-screen' },
+      createElement('h1', {}, 'Loading...'),
+      createElement('p', {}, this.loadingMessage)
+    );
+  }
+
+  renderError() {
+    return createElement('div', { className: 'team-select-screen' },
+      createElement('h1', {}, '⚠️ Error Loading Data'),
+      createElement('p', {}, this.error),
+      createElement('button', { className: 'team-btn', onclick: () => this.showDateSelect() }, 'Back')
+    );
+  }
+
+  renderDateSelect() {
+    return createElement('div', { className: 'team-select-screen' },
+      createElement('h1', {}, 'Select Date Range'),
+      createElement('input', { id: 'startDate', type: 'date', value: '2025-04-25' }),
+      createElement('input', { id: 'endDate', type: 'date', value: '2025-04-30' }),
+      createElement('button', {
+        className: 'team-btn',
+        onclick: () => {
+          const s = document.getElementById('startDate').value.replace(/-/g, '');
+          const e = document.getElementById('endDate').value.replace(/-/g, '');
+          this.loadDataRange(s, e);
+        }
+      }, 'Load Data')
+    );
   }
 
   renderTeamSelect() {
-    return createElement('div', { className: 'team-select-screen' },
-      createElement('h1', {}, 'Select a Team'),
-      createElement('p', {}, 'Choose a team to view their batting lineup'),
-      createElement('div', { className: 'team-buttons' },
-        Object.keys(TEAMS_DATA).map(team =>
-          createElement('button', {
-            className: 'team-btn',
-            onclick: () => this.showLineup(team)
-          }, team)
+    const teams = Object.keys(TEAMS_DATA);
+    if (teams.length === 0) {
+      return createElement('div', { className: 'team-select-screen' },
+        createElement('p', {}, 'No team data.'),
+        createElement('button', { className: 'team-btn', onclick: () => this.showDateSelect() }, 'Back')
+      );
+    }
+
+    const teamButtons = teams.map(t => {
+      const playerCount = TEAMS_DATA[t].length;
+      const totalPitches = TEAMS_DATA[t].reduce((sum, b) => sum + (b.stats?.totalPitches || 0), 0);
+      
+      return createElement('div', { className: 'team-card', onclick: () => this.showLineup(t) },
+        createElement('div', { className: 'team-card-name' }, t),
+        createElement('div', { className: 'team-card-stats' },
+          createElement('div', { className: 'stat-item' },
+            createElement('span', { className: 'stat-number' }, playerCount),
+            createElement('span', { className: 'stat-label' }, 'Players')
+          ),
+          createElement('div', { className: 'stat-item' },
+            createElement('span', { className: 'stat-number' }, totalPitches),
+            createElement('span', { className: 'stat-label' }, 'Pitches')
+          )
         )
-      )
+      );
+    });
+
+    return createElement('div', { className: 'team-select-screen' },
+      createElement('div', { className: 'team-select-header' },
+        createElement('h1', {}, '⚾ Select a Team'),
+        createElement('p', {}, `${teams.length} teams available • Date range: ${METADATA?.startDate || 'N/A'} - ${METADATA?.endDate || 'N/A'}`),
+        createElement('button', { className: 'back-btn', onclick: () => this.showDateSelect() }, '← Change Dates')
+      ),
+      createElement('div', { className: 'team-grid' }, ...teamButtons)
     );
   }
 
   renderLineup() {
     const lineup = TEAMS_DATA[this.selectedTeam];
     
+    const cards = lineup.map((batter, i) => {
+      return createElement('div', { 
+        className: 'mini-card',
+        onclick: () => this.showFlashcard(i)
+      },
+        createElement('div', { className: 'mini-card-order' }, `#${i + 1}`),
+        createElement('div', { className: 'mini-card-name' }, batter.batter),
+        createElement('div', { className: 'mini-card-hand' }, batter.handedness),
+        createElement('div', { className: 'mini-card-pitches' }, `${batter.stats?.totalPitches || 0} pitches`)
+      );
+    });
+
     return createElement('div', { className: 'lineup-screen' },
-      createElement('button', {
-        className: 'back-btn',
-        onclick: () => this.showTeamSelect()
-      }, '← Back to Teams'),
       createElement('div', { className: 'lineup-header' },
-        createElement('h1', {}, `${this.selectedTeam} Batting Lineup`),
-        createElement('p', {}, 'Click on any batter to view detailed scouting report')
+        createElement('button', { className: 'back-btn', onclick: () => this.showTeamSelect() }, '← Teams'),
+        createElement('h1', {}, `${this.selectedTeam} Lineup`),
+        createElement('p', {}, `${lineup.length} batters`)
       ),
-      createElement('div', { className: 'lineup-grid' },
-        lineup.map((batter, index) =>
-          createElement('div', {
-            className: 'mini-card',
-            onclick: () => this.showFlashcard(index)
-          },
-            createElement('div', { className: 'mini-card-order' }, `#${batter.battingOrder}`),
-            createElement('div', { className: 'mini-card-name' }, batter.batter),
-            createElement('div', { className: 'mini-card-hand' }, batter.handedness)
-          )
-        )
-      )
+      createElement('div', { className: 'lineup-grid' }, ...cards)
     );
   }
 
   renderFlashcard() {
     const lineup = TEAMS_DATA[this.selectedTeam];
     const data = lineup[this.selectedBatterIndex];
-    
-    const widget = createElement('div', { className: 'widget' },
+
+    return createElement('div', { className: 'widget' },
       createElement('div', { className: 'header' },
         createElement('div', { className: 'header__title' },
-          createElement('span', { className: 'name' }, data.batter),
-          createElement('span', { className: 'meta' }, 'vs'),
-          createElement('span', { className: 'name', style: { color: 'var(--accent)' } }, data.pitcher),
-          createElement('span', { className: 'meta' }, `• ${data.context}`)
+          createElement('span', { className: 'name' }, data.batter || 'Unknown'),
+          createElement('span', { className: 'meta' }, data.handedness || ''),
+          createElement('span', { className: 'meta' }, `• ${data.stats?.totalPitches || 0} pitches`),
+          createElement('button', { 
+            className: 'info-btn',
+            onclick: () => this.toggleInfo()
+          }, 'ℹ️')
         ),
         createElement('div', { className: 'header__controls' },
-          createElement('span', { 
-            className: 'chip back-chip',
-            onclick: () => this.showLineup(this.selectedTeam)
-          }, '← Lineup'),
-          createElement('span', { 
-            className: 'chip',
-            onclick: () => {
-              this.selectedBatterIndex = Math.max(0, this.selectedBatterIndex - 1);
-              this.render();
-            }
-          }, '◀ Prev'),
-          createElement('span', { 
-            className: 'chip',
-            onclick: () => {
-              this.selectedBatterIndex = Math.min(lineup.length - 1, this.selectedBatterIndex + 1);
-              this.render();
-            }
-          }, 'Next ▶')
+          createElement('span', { className: 'chip back-chip', onclick: () => this.showLineup(this.selectedTeam) }, '← Lineup'),
+          createElement('span', { className: 'chip', onclick: () => { 
+            this.selectedBatterIndex = (this.selectedBatterIndex - 1 + lineup.length) % lineup.length;
+            this.render(); 
+          } }, '◀ Prev'),
+          createElement('span', { className: 'chip', onclick: () => { 
+            this.selectedBatterIndex = (this.selectedBatterIndex + 1) % lineup.length;
+            this.render(); 
+          } }, 'Next ▶')
         )
       ),
-      createElement('div', { className: 'pitch-zone-section' },
-        createPitchZone(data.pitchZones),
-        createBatterGraphic(data.handedness, data.batter)
-      ),
-      createTendencies(data.tendencies, data.powerSequence)
+      this.showInfoPanel ? createElement('div', { className: 'info-overlay', onclick: () => this.toggleInfo() },
+        createElement('div', { className: 'info-modal', onclick: (e) => e.stopPropagation() },
+          createElement('h3', {}, 'How to Read This Scouting Card'),
+          createElement('div', { className: 'info-content' },
+            createElement('p', {}, createElement('strong', {}, '🎯 Strike Zone:'), ' Green circles = attack these locations (whiffs, weak contact). Red circles = avoid (hard contact, balls). Letters show pitch type: F (Fastball), S (Sinker/Slider), C (Cutter/Curve), CH (Changeup).'),
+            createElement('p', {}, createElement('strong', {}, '⚠️ Vulnerable Zones:'), ' Where batter struggles most. High whiff rates, weak contact, or lots of fouls. Attack here!'),
+            createElement('p', {}, createElement('strong', {}, '🔥 Hot Zones:'), ' Danger zones where batter hits hard (95+ mph exit velo). Avoid pitching here.'),
+            createElement('p', {}, createElement('strong', {}, '⚾ Strikeout Sequence:'), ' Most common 2-pitch combo that gets strikeouts against this batter.'),
+            createElement('p', {}, createElement('strong', {}, '🎯 Threats:'), ' Steal threat (base running), bunt threat, and spray chart tendency (pull/opposite field).'),
+            createElement('p', {}, createElement('strong', {}, '📊 First-Pitch:'), ' Shows if batter is aggressive (>50% swing rate) or patient on first pitch.')
+          ),
+          createElement('button', { className: 'close-info-btn', onclick: () => this.toggleInfo() }, '✕ Close')
+        )
+      ) : null,
+      createElement('div', { className: 'pitch-zone-section' }, createPitchZone(data.pitchZones || [])),
+      createBatterGraphic(data.handedness, data.batter, data.pitchZones),
+      createTendencies(data.tendencies, data.stats, data.zoneAnalysis, data.powerSequence)
     );
-
-    return widget;
   }
 
   render() {
     this.container.innerHTML = '';
-    
     let content;
-    if (this.currentScreen === 'teamSelect') {
-      content = this.renderTeamSelect();
-    } else if (this.currentScreen === 'lineup') {
-      content = this.renderLineup();
-    } else if (this.currentScreen === 'flashcard') {
-      content = this.renderFlashcard();
-    }
-    
+    if (this.currentScreen === 'loading') content = this.renderLoading();
+    else if (this.currentScreen === 'error') content = this.renderError();
+    else if (this.currentScreen === 'dateSelect') content = this.renderDateSelect();
+    else if (this.currentScreen === 'teamSelect') content = this.renderTeamSelect();
+    else if (this.currentScreen === 'lineup') content = this.renderLineup();
+    else if (this.currentScreen === 'flashcard') content = this.renderFlashcard();
     this.container.appendChild(content);
   }
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    new FlashcardApp(document.getElementById('app'));
-  });
+  document.addEventListener('DOMContentLoaded', () => new FlashcardApp(document.getElementById('app')));
 } else {
   new FlashcardApp(document.getElementById('app'));
 }
