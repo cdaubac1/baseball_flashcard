@@ -58,17 +58,28 @@ function createPitchZone(zones, handedness) {
   });
 
   const isLeftHanded = handedness === 'LHB';
-  const batterClass = isLeftHanded ? 'left-handed' : 'right-handed';
+  const batterClass = isLeftHanded ? 'batter-graphic-left-handed' : 'batter-graphic-right-handed';
+  const svgPath = isLeftHanded ? './left-hand-batter.svg' : './right-hand-batter.svg';
   
-  // Create simple batter graphic div (CSS handles the visual)
+  // Create img element for SVG
+  const svgImg = createElement('img', {
+    src: svgPath,
+    alt: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter',
+    style: { width: '100%', height: '100%', 'object-fit': 'contain' }
+  });
+  
+  // Create batter graphic div with SVG
   const batterGraphic = createElement('div', { 
     className: `batter-graphic ${batterClass}`,
     title: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter'
-  });
+  }, svgImg);
 
+  const pitchZone = createElement('div', { className: 'pitch-zone' }, ...pitchElements);
+  
+  // Order: left-handed on left (order 0), pitch zone in middle (order 1), right-handed on right (order 2)
   return createElement('div', { className: 'pitch-zone-container' },
     batterGraphic,
-    createElement('div', { className: 'pitch-zone' }, ...pitchElements)
+    pitchZone
   );
 }
 
@@ -131,37 +142,33 @@ function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
   vulnerableZones.sort((a, b) => b.score - a.score);
   hotZones.sort((a, b) => b.hardHitPct - a.hardHitPct);
 
-  return createElement('div', { className: 'info-section' },
-    createElement('div', { className: 'tendencies' },
-      createElement('h3', {}, 'Batter Profile'),
-      createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Whiff Rate'),
-        createElement('span', { className: 'tendency-value' }, whiffRate)
-      ),
-      createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Contact Rate'),
-        createElement('span', { className: 'tendency-value' }, contactRate)
-      ),
-      createElement('div', { className: 'tendency-item' },
-        createElement('span', { className: 'tendency-label' }, 'Swing Rate'),
-        createElement('span', { className: 'tendency-value' }, swingRate)
-      )
-    ),
+  // Extract text from first pitch approach, removing percentages
+  let firstPitchText = tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`;
+  // Remove percentages from first pitch text
+  firstPitchText = firstPitchText.replace(/\(\d+%\)/g, '').replace(/\d+%/g, '').trim();
+  
+  // Extract text from spray, removing percentages
+  let sprayText = tendencies?.spray || 'All fields';
+  // Remove percentages and percentage patterns from spray text
+  sprayText = sprayText.replace(/\s*\([^)]*%[^)]*\)/g, '') // Remove (X%) patterns
+    .replace(/P:\d+%\s*O:\d+%[^)]*/g, '') // Remove P:X% O:Y% patterns
+    .replace(/\s*\(\d+%\)/g, '') // Remove trailing (X%)
+    .trim();
 
+  return createElement('div', { className: 'info-section' },
     createElement('div', { className: 'power-sequence stats-box' },
       createElement('h4', {}, 'First-Pitch Approach'),
-      createElement('div', { className: 'power-sequence-text' }, 
-        tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`)
+      createElement('div', { className: 'power-sequence-text' }, firstPitchText)
     ),
 
     vulnerableZones.length > 0 ? createElement('div', { className: 'power-sequence vulnerable-zone' },
-      createElement('h4', {}, '⚠️ Vulnerable Zones'),
+      createElement('h4', {}, 'Vulnerable Zones'),
       createElement('div', { className: 'power-sequence-text' }, 
         vulnerableZones.slice(0, 2).map(z => z.zone).join(', ') || 'Calculating...')
     ) : null,
 
     hotZones.length > 0 ? createElement('div', { className: 'power-sequence hot-zone' },
-      createElement('h4', {}, '🔥 Hot Zones (Avoid)'),
+      createElement('h4', {}, 'Hot Zones (Avoid)'),
       createElement('div', { className: 'power-sequence-text' }, 
         hotZones.slice(0, 2).map(z => z.zone).join(', ') || 'None identified')
     ) : null,
@@ -174,16 +181,16 @@ function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
     createElement('div', { className: 'power-sequence threat-box' },
       createElement('h4', {}, 'Threats & Tendencies'),
       createElement('div', { className: 'threat-item' },
-        createElement('span', { className: 'threat-label' }, '🏃 Steal:'),
+        createElement('span', { className: 'threat-label' }, 'Steal:'),
         createElement('span', { className: 'threat-value' }, tendencies?.stealThreat || 'Low')
       ),
       createElement('div', { className: 'threat-item' },
-        createElement('span', { className: 'threat-label' }, '🎯 Bunt:'),
+        createElement('span', { className: 'threat-label' }, 'Bunt:'),
         createElement('span', { className: 'threat-value' }, tendencies?.buntThreat || 'Low')
       ),
       createElement('div', { className: 'threat-item' },
-        createElement('span', { className: 'threat-label' }, '⚾ Spray:'),
-        createElement('span', { className: 'threat-value' }, tendencies?.spray || 'All fields')
+        createElement('span', { className: 'threat-label' }, 'Spray:'),
+        createElement('span', { className: 'threat-value' }, sprayText)
       )
     )
   );
@@ -264,7 +271,7 @@ class FlashcardApp {
 
   renderError() {
     return createElement('div', { className: 'team-select-screen' },
-      createElement('h1', {}, '⚠️ Error Loading Data'),
+      createElement('h1', {}, 'Error Loading Data'),
       createElement('p', {}, this.error),
       createElement('button', { className: 'team-btn', onclick: () => this.showDateSelect() }, 'Back')
     );
@@ -316,7 +323,7 @@ class FlashcardApp {
 
     return createElement('div', { className: 'team-select-screen' },
       createElement('div', { className: 'team-select-header' },
-        createElement('h1', {}, '⚾ Select a Team'),
+        createElement('h1', {}, 'Select a Team'),
         createElement('p', {}, `${teams.length} teams available • Date range: ${METADATA?.startDate || 'N/A'} - ${METADATA?.endDate || 'N/A'}`),
         createElement('button', { className: 'back-btn', onclick: () => this.showDateSelect() }, '← Change Dates')
       ),
@@ -362,7 +369,7 @@ class FlashcardApp {
           createElement('button', { 
             className: 'info-btn',
             onclick: () => this.toggleInfo()
-          }, 'ℹ️')
+          }, '?')
         ),
         createElement('div', { className: 'header__controls' },
           createElement('span', { className: 'chip back-chip', onclick: () => this.showLineup(this.selectedTeam) }, '← Lineup'),
@@ -380,14 +387,14 @@ class FlashcardApp {
         createElement('div', { className: 'info-modal', onclick: (e) => e.stopPropagation() },
           createElement('h3', {}, 'Understanding this Widget'),
           createElement('div', { className: 'info-content' },
-            createElement('p', {}, createElement('strong', {}, '🎯 Strike Zone:'), ' Green circles = attack these locations (whiffs, weak contact). Red circles = avoid (hard contact, balls). Letters show pitch type: F (Fastball), S (Sinker/Slider), C (Cutter/Curve), CH (Changeup). The batter icon shows their batting stance.'),
-            createElement('p', {}, createElement('strong', {}, '⚠️ Vulnerable Zones:'), ' Where batter struggles most. High whiff rates, weak contact, or lots of fouls. Attack here!'),
-            createElement('p', {}, createElement('strong', {}, '🔥 Hot Zones:'), ' Danger zones where batter hits hard (95+ mph exit velo). Avoid pitching here.'),
-            createElement('p', {}, createElement('strong', {}, '⚾ Strikeout Sequence:'), ' Most common 2-pitch combo that gets strikeouts against this batter.'),
-            createElement('p', {}, createElement('strong', {}, '🎯 Threats:'), ' Steal threat (base running), bunt threat, and spray chart tendency (pull/opposite field).'),
-            createElement('p', {}, createElement('strong', {}, '📊 First-Pitch:'), ' Shows if batter is aggressive (>50% swing rate) or patient on first pitch.')
+            createElement('p', {}, createElement('strong', {}, 'Strike Zone:'), ' Green circles = attack these locations (whiffs, weak contact). Red circles = avoid (hard contact, balls). Letters show pitch type: F (Fastball), S (Sinker/Slider), C (Cutter/Curve), CH (Changeup). The batter icon shows their batting stance.'),
+            createElement('p', {}, createElement('strong', {}, 'Vulnerable Zones:'), ' Where batter struggles most. High whiff rates, weak contact, or lots of fouls. Attack here!'),
+            createElement('p', {}, createElement('strong', {}, 'Hot Zones:'), ' Danger zones where batter hits hard (95+ mph exit velo). Avoid pitching here.'),
+            createElement('p', {}, createElement('strong', {}, 'Strikeout Sequence:'), ' Most common 2-pitch combo that gets strikeouts against this batter.'),
+            createElement('p', {}, createElement('strong', {}, 'Threats:'), ' Steal threat (base running), bunt threat, and spray chart tendency (pull/opposite field).'),
+            createElement('p', {}, createElement('strong', {}, 'First-Pitch:'), ' Shows if batter is aggressive (>50% swing rate) or patient on first pitch.')
           ),
-          createElement('button', { className: 'close-info-btn', onclick: () => this.toggleInfo() }, '✕ Close')
+          createElement('button', { className: 'close-info-btn', onclick: () => this.toggleInfo() }, 'Close')
         )
       ) : null,
       createElement('div', { className: 'pitch-zone-section' }, createPitchZone(data.pitchZones || [], data.handedness)),
