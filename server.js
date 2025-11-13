@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.static('.'));
 
 const FTP_CONFIG = {
-  //Paste code here
+    //Paste code here
 };
 
 function transformPitchDataToTeams(csvData, existingData = {}) {

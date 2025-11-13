@@ -356,6 +356,76 @@ html, body {
   justify-content: center;
   background: var(--bg);
   padding: 20px;
+  position: relative;
+}
+
+.pitch-zone-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.batter-graphic {
+  width: 60px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  opacity: 0.6;
+}
+
+/* Baseball bat */
+.batter-graphic::before {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 120px;
+  background: linear-gradient(to bottom, 
+    #8B4513 0%, 
+    #A0522D 20%, 
+    #8B4513 40%, 
+    #654321 100%);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+}
+
+/* Bat handle (grip) */
+.batter-graphic::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 30px;
+  background: #2c2c2c;
+  border-radius: 3px;
+  bottom: 40px;
+}
+
+/* Left-handed batter (bat on right side) */
+.batter-graphic.left-handed::before {
+  transform: rotate(-25deg);
+}
+
+.batter-graphic.left-handed::after {
+  transform: rotate(-25deg);
+}
+
+/* Right-handed batter (bat on left side) */
+.batter-graphic.right-handed::before {
+  transform: rotate(25deg);
+}
+
+.batter-graphic.right-handed::after {
+  transform: rotate(25deg);
+}
+
+.batter-graphic.left-handed {
+  order: 2;
+}
+
+.batter-graphic.right-handed {
+  order: 0;
 }
 
 .pitch-zone {
@@ -367,6 +437,7 @@ html, body {
   background: #ffffff;
   margin: 0 auto;
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  order: 1;
 }
 
 /* Strike zone box */
@@ -733,6 +804,11 @@ html, body {
     height: 32px;
     font-size: 12px;
   }
+  
+  .batter-graphic {
+    font-size: 60px;
+    width: 60px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -761,5 +837,10 @@ html, body {
   
   .header__title .meta {
     font-size: 14px;
+  }
+  
+  .batter-graphic {
+    font-size: 50px;
+    width: 50px;
   }
 }

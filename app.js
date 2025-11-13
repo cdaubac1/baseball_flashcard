@@ -29,7 +29,7 @@ function createElement(tag, props = {}, ...children) {
   return el;
 }
 
-function createPitchZone(zones) {
+function createPitchZone(zones, handedness) {
   const safeZones = Array.isArray(zones) ? zones : [];
   
   let displayZones = safeZones;
@@ -57,7 +57,19 @@ function createPitchZone(zones) {
     }, pitchType);
   });
 
-  return createElement('div', { className: 'pitch-zone' }, ...pitchElements);
+  const isLeftHanded = handedness === 'LHB';
+  const batterClass = isLeftHanded ? 'left-handed' : 'right-handed';
+  
+  // Create simple batter graphic div (CSS handles the visual)
+  const batterGraphic = createElement('div', { 
+    className: `batter-graphic ${batterClass}`,
+    title: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter'
+  });
+
+  return createElement('div', { className: 'pitch-zone-container' },
+    batterGraphic,
+    createElement('div', { className: 'pitch-zone' }, ...pitchElements)
+  );
 }
 
 function createBatterGraphic(handedness, batterName, pitchZones) {
@@ -366,9 +378,9 @@ class FlashcardApp {
       ),
       this.showInfoPanel ? createElement('div', { className: 'info-overlay', onclick: () => this.toggleInfo() },
         createElement('div', { className: 'info-modal', onclick: (e) => e.stopPropagation() },
-          createElement('h3', {}, 'How to Read This Scouting Card'),
+          createElement('h3', {}, 'Understanding this Widget'),
           createElement('div', { className: 'info-content' },
-            createElement('p', {}, createElement('strong', {}, '🎯 Strike Zone:'), ' Green circles = attack these locations (whiffs, weak contact). Red circles = avoid (hard contact, balls). Letters show pitch type: F (Fastball), S (Sinker/Slider), C (Cutter/Curve), CH (Changeup).'),
+            createElement('p', {}, createElement('strong', {}, '🎯 Strike Zone:'), ' Green circles = attack these locations (whiffs, weak contact). Red circles = avoid (hard contact, balls). Letters show pitch type: F (Fastball), S (Sinker/Slider), C (Cutter/Curve), CH (Changeup). The batter icon shows their batting stance.'),
             createElement('p', {}, createElement('strong', {}, '⚠️ Vulnerable Zones:'), ' Where batter struggles most. High whiff rates, weak contact, or lots of fouls. Attack here!'),
             createElement('p', {}, createElement('strong', {}, '🔥 Hot Zones:'), ' Danger zones where batter hits hard (95+ mph exit velo). Avoid pitching here.'),
             createElement('p', {}, createElement('strong', {}, '⚾ Strikeout Sequence:'), ' Most common 2-pitch combo that gets strikeouts against this batter.'),
@@ -378,7 +390,7 @@ class FlashcardApp {
           createElement('button', { className: 'close-info-btn', onclick: () => this.toggleInfo() }, '✕ Close')
         )
       ) : null,
-      createElement('div', { className: 'pitch-zone-section' }, createPitchZone(data.pitchZones || [])),
+      createElement('div', { className: 'pitch-zone-section' }, createPitchZone(data.pitchZones || [], data.handedness)),
       createBatterGraphic(data.handedness, data.batter, data.pitchZones),
       createTendencies(data.tendencies, data.stats, data.zoneAnalysis, data.powerSequence)
     );
