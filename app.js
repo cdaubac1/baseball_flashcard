@@ -1,6 +1,43 @@
 let TEAMS_DATA = {};
 let METADATA = null;
 
+// Default settings
+const DEFAULT_SETTINGS = {
+  // First pitch thresholds
+  aggressiveFirstPitchThreshold: 50,
+  
+  // Steal threat thresholds
+  stealHighAttemptsThreshold: 3,
+  stealModerateAttemptsThreshold: 1,
+  
+  // Bunt threat thresholds
+  buntHighThreshold: 3,
+  buntModerateThreshold: 1,
+  
+  // Spray chart thresholds
+  sprayPullThreshold: 60,
+  sprayOppoThreshold: 40,
+  sprayMinAtBats: 5,
+  sprayAngleThreshold: 15,
+  
+  // Zone analysis thresholds
+  vulnerableZoneMinSwings: 3,
+  vulnerableZoneThreshold: 45,
+  hotZoneMinHardHits: 2,
+  hotZoneHardHitThreshold: 40,
+  
+  // Contact quality thresholds
+  hardContactThreshold: 95,
+  weakContactThreshold: 70,
+  
+  // Pitch display settings
+  maxPitchesDisplayed: 10,
+  showOnlyGoodPitches: false,
+  showOnlyBadPitches: false
+};
+
+let CURRENT_SETTINGS = { ...DEFAULT_SETTINGS };
+
 function createElement(tag, props = {}, ...children) {
   const el = document.createElement(tag);
 
@@ -32,13 +69,25 @@ function createElement(tag, props = {}, ...children) {
 function createPitchZone(zones, handedness) {
   const safeZones = Array.isArray(zones) ? zones : [];
   
-  let displayZones = safeZones;
-  if (safeZones.length > 10) {
-    const step = safeZones.length / 10;
+  // Apply pitch filtering based on settings
+  let filteredZones = safeZones;
+  
+  if (CURRENT_SETTINGS.showOnlyGoodPitches) {
+    filteredZones = filteredZones.filter(z => z.good === true);
+  } else if (CURRENT_SETTINGS.showOnlyBadPitches) {
+    filteredZones = filteredZones.filter(z => z.good === false);
+  }
+  
+  // Apply max pitches limit
+  let displayZones = filteredZones;
+  const maxPitches = CURRENT_SETTINGS.maxPitchesDisplayed;
+  
+  if (filteredZones.length > maxPitches) {
+    const step = filteredZones.length / maxPitches;
     displayZones = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < maxPitches; i++) {
       const index = Math.floor(i * step);
-      displayZones.push(safeZones[index]);
+      displayZones.push(filteredZones[index]);
     }
   }
   
@@ -59,16 +108,14 @@ function createPitchZone(zones, handedness) {
 
   const isLeftHanded = handedness === 'LHB';
   const batterClass = isLeftHanded ? 'batter-graphic-left-handed' : 'batter-graphic-right-handed';
-  const svgPath = isLeftHanded ? './left-hand-batter.svg' : './right-hand-batter.svg';
+  const svgPath = isLeftHanded ? './lhb.svg' : './rhb.svg';
   
-  // Create img element for SVG
   const svgImg = createElement('img', {
     src: svgPath,
     alt: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter',
     style: { width: '100%', height: '100%', 'object-fit': 'contain' }
   });
   
-  // Create batter graphic div with SVG
   const batterGraphic = createElement('div', { 
     className: `batter-graphic ${batterClass}`,
     title: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter'
@@ -76,7 +123,6 @@ function createPitchZone(zones, handedness) {
 
   const pitchZone = createElement('div', { className: 'pitch-zone' }, ...pitchElements);
   
-  // Order: left-handed on left (order 0), pitch zone in middle (order 1), right-handed on right (order 2)
   return createElement('div', { className: 'pitch-zone-container' },
     batterGraphic,
     pitchZone
@@ -121,18 +167,18 @@ function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
   
   if (zoneAnalysis) {
     Object.entries(zoneAnalysis).forEach(([zone, stats]) => {
-      if (stats.swings > 3) {
+      if (stats.swings > CURRENT_SETTINGS.vulnerableZoneMinSwings) {
         const whiffPct = (stats.whiffs / stats.swings * 100);
         const weakContactPct = stats.contact > 0 ? (stats.weakContact / stats.contact * 100) : 0;
         const foulPct = (stats.fouls / stats.swings * 100);
         const combinedVulnerability = whiffPct + (weakContactPct * 0.5) + (foulPct * 0.3);
         
-        if (combinedVulnerability > 45) {
+        if (combinedVulnerability > CURRENT_SETTINGS.vulnerableZoneThreshold) {
           vulnerableZones.push({ zone, score: combinedVulnerability.toFixed(0) });
         }
         
         const hardHitPct = stats.contact > 0 ? (stats.hardHits / stats.contact * 100) : 0;
-        if (hardHitPct > 40 && stats.hardHits >= 2) {
+        if (hardHitPct > CURRENT_SETTINGS.hotZoneHardHitThreshold && stats.hardHits >= CURRENT_SETTINGS.hotZoneMinHardHits) {
           hotZones.push({ zone, hardHitPct: hardHitPct.toFixed(0) });
         }
       }
@@ -142,17 +188,13 @@ function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
   vulnerableZones.sort((a, b) => b.score - a.score);
   hotZones.sort((a, b) => b.hardHitPct - a.hardHitPct);
 
-  // Extract text from first pitch approach, removing percentages
   let firstPitchText = tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`;
-  // Remove percentages from first pitch text
   firstPitchText = firstPitchText.replace(/\(\d+%\)/g, '').replace(/\d+%/g, '').trim();
   
-  // Extract text from spray, removing percentages
   let sprayText = tendencies?.spray || 'All fields';
-  // Remove percentages and percentage patterns from spray text
-  sprayText = sprayText.replace(/\s*\([^)]*%[^)]*\)/g, '') // Remove (X%) patterns
-    .replace(/P:\d+%\s*O:\d+%[^)]*/g, '') // Remove P:X% O:Y% patterns
-    .replace(/\s*\(\d+%\)/g, '') // Remove trailing (X%)
+  sprayText = sprayText.replace(/\s*\([^)]*%[^)]*\)/g, '')
+    .replace(/P:\d+%\s*O:\d+%[^)]*/g, '')
+    .replace(/\s*\(\d+%\)/g, '')
     .trim();
 
   return createElement('div', { className: 'info-section' },
@@ -203,11 +245,27 @@ class FlashcardApp {
     this.selectedTeam = null;
     this.selectedBatterIndex = 0;
     this.showInfoPanel = false;
+    this.showSettingsPanel = false;
     this.render();
   }
 
   toggleInfo() {
     this.showInfoPanel = !this.showInfoPanel;
+    this.render();
+  }
+
+  toggleSettings() {
+    this.showSettingsPanel = !this.showSettingsPanel;
+    this.render();
+  }
+
+  updateSetting(key, value) {
+    CURRENT_SETTINGS[key] = value;
+    this.render();
+  }
+
+  resetSettings() {
+    CURRENT_SETTINGS = { ...DEFAULT_SETTINGS };
     this.render();
   }
 
@@ -356,6 +414,115 @@ class FlashcardApp {
     );
   }
 
+  renderSettingsPanel() {
+    const createSlider = (label, key, min, max, step = 1) => {
+      return createElement('div', { className: 'setting-item' },
+        createElement('label', { className: 'setting-label' }, label),
+        createElement('div', { className: 'setting-input-group' },
+          createElement('input', {
+            type: 'range',
+            min: min,
+            max: max,
+            step: step,
+            value: CURRENT_SETTINGS[key],
+            className: 'setting-slider',
+            oninput: (e) => {
+              const value = parseFloat(e.target.value);
+              this.updateSetting(key, value);
+              e.target.parentElement.querySelector('.setting-number-input').value = value;
+            }
+          }),
+          createElement('input', {
+            type: 'number',
+            min: min,
+            max: max,
+            step: step,
+            value: CURRENT_SETTINGS[key],
+            className: 'setting-number-input',
+            oninput: (e) => {
+              const value = parseFloat(e.target.value);
+              if (value >= min && value <= max) {
+                this.updateSetting(key, value);
+                e.target.parentElement.querySelector('.setting-slider').value = value;
+              }
+            }
+          })
+        )
+      );
+    };
+
+    const createCheckbox = (label, key) => {
+      return createElement('div', { className: 'setting-item' },
+        createElement('label', { className: 'setting-label' }, label),
+        createElement('input', {
+          type: 'checkbox',
+          checked: CURRENT_SETTINGS[key],
+          className: 'setting-checkbox',
+          onchange: (e) => {
+            this.updateSetting(key, e.target.checked);
+          }
+        })
+      );
+    };
+
+    return createElement('div', { className: 'settings-overlay', onclick: () => this.toggleSettings() },
+      createElement('div', { className: 'settings-modal', onclick: (e) => e.stopPropagation() },
+        createElement('h3', {}, 'Analysis Settings'),
+        
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Pitch Display'),
+          createSlider('Max Pitches Displayed', 'maxPitchesDisplayed', 1, 50, 1),
+          createCheckbox('Show Only Good Pitches', 'showOnlyGoodPitches'),
+          createCheckbox('Show Only Bad Pitches', 'showOnlyBadPitches')
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'First Pitch Approach'),
+          createSlider('Aggressive Threshold (%)', 'aggressiveFirstPitchThreshold', 0, 100, 5)
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Steal Threat'),
+          createSlider('High Threat Min Attempts', 'stealHighAttemptsThreshold', 1, 10, 1),
+          createSlider('Moderate Threat Min Attempts', 'stealModerateAttemptsThreshold', 1, 5, 1)
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Bunt Threat'),
+          createSlider('High Threat Min Bunts', 'buntHighThreshold', 1, 10, 1),
+          createSlider('Moderate Threat Min Bunts', 'buntModerateThreshold', 1, 5, 1)
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Spray Chart'),
+          createSlider('Pull Hitter Threshold (%)', 'sprayPullThreshold', 0, 100, 5),
+          createSlider('Opposite Field Threshold (%)', 'sprayOppoThreshold', 0, 100, 5),
+          createSlider('Min At Bats for Analysis', 'sprayMinAtBats', 1, 20, 1),
+          createSlider('Angle Threshold (degrees)', 'sprayAngleThreshold', 5, 45, 5)
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Zone Analysis'),
+          createSlider('Vulnerable Zone Min Swings', 'vulnerableZoneMinSwings', 1, 10, 1),
+          createSlider('Vulnerable Zone Threshold', 'vulnerableZoneThreshold', 0, 100, 5),
+          createSlider('Hot Zone Min Hard Hits', 'hotZoneMinHardHits', 1, 10, 1),
+          createSlider('Hot Zone Hard Hit % Threshold', 'hotZoneHardHitThreshold', 0, 100, 5)
+        ),
+
+        createElement('div', { className: 'settings-section' },
+          createElement('h4', {}, 'Contact Quality'),
+          createSlider('Hard Contact Threshold (mph)', 'hardContactThreshold', 80, 110, 1),
+          createSlider('Weak Contact Threshold (mph)', 'weakContactThreshold', 50, 90, 1)
+        ),
+
+        createElement('div', { className: 'settings-buttons' },
+          createElement('button', { className: 'reset-btn', onclick: () => this.resetSettings() }, 'Reset to Defaults'),
+          createElement('button', { className: 'close-settings-btn', onclick: () => this.toggleSettings() }, 'Close')
+        )
+      )
+    );
+  }
+
   renderFlashcard() {
     const lineup = TEAMS_DATA[this.selectedTeam];
     const data = lineup[this.selectedBatterIndex];
@@ -369,7 +536,11 @@ class FlashcardApp {
           createElement('button', { 
             className: 'info-btn',
             onclick: () => this.toggleInfo()
-          }, '?')
+          }, '?'),
+          createElement('button', { 
+            className: 'settings-btn',
+            onclick: () => this.toggleSettings()
+          }, '⚙')
         ),
         createElement('div', { className: 'header__controls' },
           createElement('span', { className: 'chip back-chip', onclick: () => this.showLineup(this.selectedTeam) }, '← Lineup'),
@@ -397,6 +568,7 @@ class FlashcardApp {
           createElement('button', { className: 'close-info-btn', onclick: () => this.toggleInfo() }, 'Close')
         )
       ) : null,
+      this.showSettingsPanel ? this.renderSettingsPanel() : null,
       createElement('div', { className: 'pitch-zone-section' }, createPitchZone(data.pitchZones || [], data.handedness)),
       createBatterGraphic(data.handedness, data.batter, data.pitchZones),
       createTendencies(data.tendencies, data.stats, data.zoneAnalysis, data.powerSequence)

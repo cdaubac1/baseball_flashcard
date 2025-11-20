@@ -374,8 +374,8 @@ html, body {
 
 
 .batter-graphic {
-  width: 315px;      /* use the newly freed horizontal space */
-  height: 500px;     /* same as .pitch-zone height for nice alignment */
+  width: 450px;      /* even larger for better visual prominence */
+  height: 600px;     /* even larger for better visual prominence */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -406,8 +406,8 @@ html, body {
 }
 
 .pitch-zone {
-  width: 380px;
-  height: 475px;
+  width: 280px;
+  height: 380px;
   border: 3px solid #333;
   border-radius: 4px;
   position: relative;
@@ -431,6 +431,7 @@ html, body {
     linear-gradient(to right, transparent calc(66.666% - 0.5px), #e0e0e0 calc(66.666% - 0.5px), #e0e0e0 calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px)),
     linear-gradient(to bottom, transparent calc(33.333% - 0.5px), #e0e0e0 calc(33.333% - 0.5px), #e0e0e0 calc(33.333% + 0.5px), transparent calc(33.333% + 0.5px)),
     linear-gradient(to bottom, transparent calc(66.666% - 0.5px), #e0e0e0 calc(66.666% - 0.5px), #e0e0e0 calc(66.666% + 0.5px), transparent calc(66.666% + 0.5px));
+  z-index: 1;
 }
 
 /* Strike zone box */
@@ -450,11 +451,11 @@ html, body {
 /* Pitch circles - SIMPLIFIED */
 .pitch-circle {
   position: absolute;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -465,6 +466,7 @@ html, body {
   border: 2px solid rgba(0,0,0,0.2);
   color: white;
   text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  z-index: 2;
 }
 
 .pitch-circle:hover {
@@ -526,7 +528,8 @@ html, body {
   grid-area: info;
   background: var(--panel);
   padding: 16px 8px;   /* was 20px all around */
-  overflow: hidden;
+  overflow-y: auto;    /* enable vertical scrolling */
+  overflow-x: hidden;  /* prevent horizontal scroll */
   border-left: 2px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -550,6 +553,24 @@ html, body {
 
 .info-btn:hover {
   background: #0056b3;
+  transform: scale(1.1);
+}
+
+.settings-btn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+
+.settings-btn:hover {
+  background: #5a6268;
   transform: scale(1.1);
 }
 
@@ -617,6 +638,197 @@ html, body {
 }
 
 .close-info-btn:hover {
+  background: #0056b3;
+}
+
+/* Settings Panel Styles */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.settings-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 100%;
+}
+
+.settings-modal h3 {
+  margin: 0 0 24px 0;
+  font-size: 28px;
+  color: var(--text);
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 16px;
+}
+
+.settings-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: var(--panel);
+  border-radius: 12px;
+  border: 2px solid var(--border);
+}
+
+.settings-section h4 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: white;
+  border-radius: 8px;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-label {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+  flex: 1;
+}
+
+.setting-input-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.setting-slider {
+  width: 200px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.setting-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.setting-slider::-webkit-slider-thumb:hover {
+  background: #0056b3;
+  transform: scale(1.2);
+}
+
+.setting-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.setting-slider::-moz-range-thumb:hover {
+  background: #0056b3;
+  transform: scale(1.2);
+}
+
+.setting-number-input {
+  width: 70px;
+  padding: 6px 10px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.setting-number-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.setting-number-input::-webkit-inner-spin-button,
+.setting-number-input::-webkit-outer-spin-button {
+  opacity: 1;
+  height: 30px;
+}
+
+.setting-checkbox {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.settings-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.reset-btn {
+  flex: 1;
+  padding: 14px 24px;
+  background: var(--muted);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-btn:hover {
+  background: #5a6268;
+}
+
+.close-settings-btn {
+  flex: 1;
+  padding: 14px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-settings-btn:hover {
   background: #0056b3;
 }
 
@@ -798,7 +1010,7 @@ html, body {
     transform-origin: center center;  /* squeeze inward evenly */
   }
   
-  /* Important: keep the original space reserved so layout doesn’t collapse */
+  /* Important: keep the original space reserved so layout doesn't collapse */
   .widget {
     width: clamp(600px, 90vw, 1100px); /* keep original width */
   }

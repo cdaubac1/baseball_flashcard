@@ -9,7 +9,25 @@ app.use(cors());
 app.use(express.static('.'));
 
 const FTP_CONFIG = {
-    //Paste code here
+  // Paste ftp info here
+}
+
+// Team name mapping
+const TEAM_NAMES = {
+  'YOR': 'York Revolution',
+  'LI': 'Long Island Ducks',
+  'LAN': 'Lancaster Stormers',
+  'STA_YAN': 'Staten Island FerryHawks',
+  'LEX_LEG': 'Lexington Legends',
+  'WES_POW': 'Charleston Dirty Birds',
+  'HP': 'High Point Rockers',
+  'GAS': 'Gastonia Ghost Peppers',
+  'SMD': 'Southern Maryland Blue Crabs',
+  'HAG_FLY': 'Hagerstown Flying Boxcars'
+};
+
+function getFullTeamName(abbrev) {
+  return TEAM_NAMES[abbrev] || abbrev;
 }
 
 function transformPitchDataToTeams(csvData, existingData = {}) {
@@ -32,7 +50,8 @@ function transformPitchDataToTeams(csvData, existingData = {}) {
   parsed.data.forEach(row => {
     if (!row.Batter || !row.BatterTeam || !row.Pitcher) return;
 
-    const teamName = row.BatterTeam;
+    const teamAbbrev = row.BatterTeam;
+    const teamName = getFullTeamName(teamAbbrev);
     const batterName = row.Batter;
     const batterKey = `${teamName}_${batterName}`;
 
