@@ -9,7 +9,7 @@ app.use(express.static('.'));
 
 const SLUGGER_CONFIG = {
   baseUrl: "https://1ywv9dczq5.execute-api.us-east-2.amazonaws.com/ALPBAPI",
-  apiKey: "" //Paste Key here
+  apiKey: "ojgvHrY7Pu4qoE4GDsmxJ1TPZnYa9qwfL9fnI072" //Paste Key here
 };
 
 const lookupCache = { players: new Map(), teams: new Map(), ballparks: new Map() };

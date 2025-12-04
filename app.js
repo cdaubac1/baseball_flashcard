@@ -26,7 +26,8 @@ weakContactThreshold: 70,
 // Pitch display settings
 maxPitchesDisplayed: 10,
 showOnlyGoodPitches: false,
-showOnlyBadPitches: false
+showOnlyBadPitches: false,
+pitchCircleSize: 32
 };
 let CURRENT_SETTINGS = { ...DEFAULT_SETTINGS };
 function createElement(tag, props = {}, ...children) {
@@ -74,16 +75,16 @@ displayZones.push(filteredZones[index]);
     }
   }
 const pitchElements = displayZones.map(zone => {
-const [x, y] = zone.position || [50, 50];
-const pitchType = zone.pitch || 'F';
-const isGood = zone.good === true;
-const colorClass = isGood ? 'pitch-circle--good' : 'pitch-circle--bad';
-return createElement('div', {
-className: `pitch-circle ${colorClass}`,
-style: { left: `${x}%`, top: `${y}%` },
-title: `${pitchType} — ${isGood ? 'Attack here' : 'Avoid this location'}`
-    }, pitchType);
-  });
+  const [x, y] = zone.position || [50, 50];
+  const pitchType = zone.pitch || 'F';
+  const isGood = zone.good === true;
+  const colorClass = isGood ? 'pitch-circle--good' : 'pitch-circle--bad';
+  return createElement('div', {
+    className: `pitch-circle ${colorClass}`,
+    style: { left: `${x}%`, top: `${y}%` },
+    title: `${pitchType} — ${isGood ? 'Attack here' : 'Avoid this location'}`
+  }, pitchType);
+});
 const isLeftHanded = handedness === 'LHB';
 const batterClass = isLeftHanded ? 'batter-graphic-left-handed' : 'batter-graphic-right-handed';
 const svgPath = isLeftHanded ? './lhb.svg' : './rhb.svg';
@@ -94,9 +95,10 @@ style: { width: '100%', height: '100%', 'object-fit': 'contain' }
   });
 const batterGraphic = createElement('div', { 
 className: `batter-graphic ${batterClass}`,
-title: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter'
+  title: isLeftHanded ? 'Left-Handed Batter' : 'Right-Handed Batter'
   }, svgImg);
 const pitchZone = createElement('div', { className: 'pitch-zone' }, ...pitchElements);
+pitchZone.style.setProperty('--pitch-circle-size', `${CURRENT_SETTINGS.pitchCircleSize}px`);
 return createElement('div', { className: 'pitch-zone-container' },
 batterGraphic,
 pitchZone
@@ -116,10 +118,19 @@ createElement('div', { className: 'batter-stats' },
   );
 }
 function createTendencies(tendencies, stats, zoneAnalysis, powerSequence) {
-const safeStats = stats || {};
-const swingRate = safeStats.totalPitches > 0
-? `${(safeStats.swings / safeStats.totalPitches * 100).toFixed(0)}%`
-: 'N/A';
+  const stripPercents = (text) => {
+    if (typeof text !== 'string') return text;
+    // Drop any parenthetical that contains a percent, then any standalone percents, then tidy spaces
+    return text
+      .replace(/\([^)]*%[^)]*\)/g, '')
+      .replace(/\d+\s*%/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  };
+  const safeStats = stats || {};
+  const swingRate = safeStats.totalPitches > 0
+    ? `${(safeStats.swings / safeStats.totalPitches * 100).toFixed(0)}%`
+    : 'N/A';
 const contactRate = safeStats.swings > 0
 ? `${(safeStats.contact / safeStats.swings * 100).toFixed(0)}%`
 : 'N/A';
@@ -149,27 +160,30 @@ hotZones.push({ zone, hardHitPct: hardHitPct.toFixed(0) });
     });
   }
 vulnerableZones.sort((a, b) => b.score - a.score);
-hotZones.sort((a, b) => b.hardHitPct - a.hardHitPct);
-let firstPitchText = tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`;
-let sprayText = tendencies?.spray || 'All fields';
-return createElement('div', { className: 'info-section' },
-createElement('div', { className: 'power-sequence stats-box' },
-createElement('h4', {}, 'First-Pitch Approach'),
-createElement('div', { className: 'power-sequence-text' }, firstPitchText)
+  hotZones.sort((a, b) => b.hardHitPct - a.hardHitPct);
+  let firstPitchText = tendencies?.firstStrike || `Swings ${firstPitchSwingRate} on first pitch`;
+  let sprayText = tendencies?.spray || 'All fields';
+  firstPitchText = stripPercents(firstPitchText);
+  sprayText = stripPercents(sprayText);
+  const cleanedPowerSequence = stripPercents(powerSequence || 'Insufficient data');
+  return createElement('div', { className: 'info-section' },
+    createElement('div', { className: 'power-sequence stats-box' },
+      createElement('h4', {}, 'First-Pitch Approach'),
+      createElement('div', { className: 'power-sequence-text' }, firstPitchText)
     ),
-vulnerableZones.length > 0 ? createElement('div', { className: 'power-sequence vulnerable-zone' },
-createElement('h4', {}, 'Vulnerable Zones'),
-createElement('div', { className: 'power-sequence-text' }, 
-vulnerableZones.slice(0, 2).map(z => z.zone).join(', ') || 'Calculating...')
+    vulnerableZones.length > 0 ? createElement('div', { className: 'power-sequence vulnerable-zone' },
+      createElement('h4', {}, 'Vulnerable Zones'),
+      createElement('div', { className: 'power-sequence-text' }, 
+        vulnerableZones.slice(0, 2).map(z => z.zone).join(', ') || 'Calculating...')
     ) : null,
-hotZones.length > 0 ? createElement('div', { className: 'power-sequence hot-zone' },
-createElement('h4', {}, 'Hot Zones (Avoid)'),
-createElement('div', { className: 'power-sequence-text' }, 
-hotZones.slice(0, 2).map(z => z.zone).join(', ') || 'None identified')
+    hotZones.length > 0 ? createElement('div', { className: 'power-sequence hot-zone' },
+      createElement('h4', {}, 'Hot Zones (Avoid)'),
+      createElement('div', { className: 'power-sequence-text' }, 
+        hotZones.slice(0, 2).map(z => z.zone).join(', ') || 'None identified')
     ) : null,
-createElement('div', { className: 'power-sequence' },
-createElement('h4', {}, 'Out Sequence'),
-createElement('div', { className: 'power-sequence-text' }, powerSequence || 'Insufficient data')
+    createElement('div', { className: 'power-sequence' },
+      createElement('h4', {}, 'Out Sequence'),
+      createElement('div', { className: 'power-sequence-text' }, cleanedPowerSequence)
     ),
 createElement('div', { className: 'power-sequence threat-box' },
 createElement('h4', {}, 'Threats & Tendencies'),
@@ -181,28 +195,87 @@ createElement('div', { className: 'threat-item' },
 createElement('span', { className: 'threat-label' }, 'Bunt:'),
 createElement('span', { className: 'threat-value' }, tendencies?.buntThreat || 'Low')
       ),
-createElement('div', { className: 'threat-item' },
-createElement('span', { className: 'threat-label' }, 'Spray:'),
-createElement('span', { className: 'threat-value' }, sprayText)
+      createElement('div', { className: 'threat-item' },
+        createElement('span', { className: 'threat-label' }, 'Spray:'),
+        createElement('span', { className: 'threat-value' }, sprayText)
       )
     )
   );
 }
 class FlashcardApp {
-constructor(container) {
-this.container = container;
-this.currentScreen = 'dateSelect';
-this.selectedTeam = null;
-this.selectedBatterIndex = 0;
-this.showInfoPanel = false;
-this.showSettingsPanel = false;
-this.render();
+  constructor(container) {
+    this.container = container;
+    this.currentScreen = 'dateSelect';
+    this.selectedTeam = null;
+    this.selectedBatterIndex = 0;
+    this.showInfoPanel = false;
+    this.showSettingsPanel = false;
+    this.ensurePrintContainers();
+    this.render();
   }
-toggleInfo() {
-this.showInfoPanel = !this.showInfoPanel;
-this.render();
+  ensurePrintContainers() {
+    if (!document.getElementById('print-container')) {
+      const single = document.createElement('div');
+      single.id = 'print-container';
+      document.body.appendChild(single);
+    }
+    if (!document.getElementById('lineup-print-container')) {
+      const lineup = document.createElement('div');
+      lineup.id = 'lineup-print-container';
+      document.body.appendChild(lineup);
+    }
   }
-toggleSettings() {
+  getPrintContainer(id) {
+    this.ensurePrintContainers();
+    return document.getElementById(id);
+  }
+  buildPrintPage(batter, teamName, orderIndex) {
+    const metaBits = [];
+    if (teamName) metaBits.push(teamName);
+    if (typeof orderIndex === 'number') metaBits.push(`#${orderIndex + 1}`);
+    if (batter.handedness) metaBits.push(batter.handedness);
+    metaBits.push(`${batter.stats?.totalPitches || 0} pitches`);
+    const header = createElement('div', { className: 'header' },
+      createElement('div', { className: 'header__title' },
+        createElement('span', { className: 'name' }, batter.batter || 'Unknown'),
+        metaBits.length ? createElement('span', { className: 'meta' }, metaBits.join(' • ')) : null
+      )
+    );
+    const pitchSection = createElement('div', { className: 'pitch-zone-section' },
+      createPitchZone(batter.pitchZones || [], batter.handedness)
+    );
+    const infoSection = createTendencies(batter.tendencies, batter.stats, batter.zoneAnalysis, batter.powerSequence);
+    const widget = createElement('div', { className: 'widget print-widget' },
+      header,
+      pitchSection,
+      infoSection
+    );
+    return createElement('div', { className: 'print-page' }, widget);
+  }
+  printCurrentCard() {
+    const lineup = TEAMS_DATA[this.selectedTeam];
+    if (!lineup || lineup.length === 0) return;
+    const batter = lineup[this.selectedBatterIndex];
+    const container = this.getPrintContainer('print-container');
+    container.innerHTML = '';
+    container.appendChild(this.buildPrintPage(batter, this.selectedTeam, this.selectedBatterIndex));
+    setTimeout(() => window.print(), 30);
+  }
+  printLineup() {
+    const lineup = TEAMS_DATA[this.selectedTeam];
+    if (!lineup || lineup.length === 0) return;
+    const container = this.getPrintContainer('lineup-print-container');
+    container.innerHTML = '';
+    lineup.forEach((batter, idx) => {
+      container.appendChild(this.buildPrintPage(batter, this.selectedTeam, idx));
+    });
+    setTimeout(() => window.print(), 30);
+  }
+  toggleInfo() {
+    this.showInfoPanel = !this.showInfoPanel;
+    this.render();
+  }
+  toggleSettings() {
 this.showSettingsPanel = !this.showSettingsPanel;
 this.render();
   }
@@ -395,11 +468,11 @@ createElement('button', { className: 'back-btn', onclick: () => this.showDateSel
 createElement('div', { className: 'team-grid' }, ...teamButtons)
     );
   }
-renderLineup() {
-const lineup = TEAMS_DATA[this.selectedTeam];
-const cards = lineup.map((batter, i) => {
-return createElement('div', { 
-className: 'mini-card',
+  renderLineup() {
+    const lineup = TEAMS_DATA[this.selectedTeam];
+    const cards = lineup.map((batter, i) => {
+      return createElement('div', { 
+        className: 'mini-card',
 onclick: () => this.showFlashcard(i)
       },
 createElement('div', { className: 'mini-card-order' }, `#${i + 1}`),
@@ -408,16 +481,17 @@ createElement('div', { className: 'mini-card-hand' }, batter.handedness),
 createElement('div', { className: 'mini-card-pitches' }, `${batter.stats?.totalPitches || 0} pitches`)
       );
     });
-return createElement('div', { className: 'lineup-screen' },
-createElement('div', { className: 'lineup-header' },
-createElement('button', { className: 'back-btn', onclick: () => this.showTeamSelect() }, '← Teams'),
-createElement('h1', {}, `${this.selectedTeam} Lineup`),
-createElement('p', {}, `${lineup.length} batters`)
+    return createElement('div', { className: 'lineup-screen' },
+      createElement('div', { className: 'lineup-header' },
+        createElement('button', { className: 'back-btn', onclick: () => this.showTeamSelect() }, '← Teams'),
+        createElement('h1', {}, `${this.selectedTeam} Lineup`),
+        createElement('p', {}, `${lineup.length} batters`),
+        createElement('button', { className: 'print-btn', onclick: () => this.printLineup() }, 'Print Lineup')
       ),
-createElement('div', { className: 'lineup-grid' }, ...cards)
+      createElement('div', { className: 'lineup-grid' }, ...cards)
     );
   }
-renderSettingsPanel() {
+  renderSettingsPanel() {
 const createSlider = (label, key, min, max, step = 1) => {
 return createElement('div', { className: 'setting-item' },
 createElement('label', { className: 'setting-label' }, label),
@@ -472,6 +546,7 @@ createElement('h3', {}, 'Analysis Settings'),
 createElement('div', { className: 'settings-section' },
 createElement('h4', {}, 'Pitch Display'),
 createSlider('Max Pitches Displayed', 'maxPitchesDisplayed', 1, 50, 1),
+createSlider('Pitch Circle Size (px)', 'pitchCircleSize', 32, 100, 1),
 createCheckbox('Show Only Good Pitches', 'showOnlyGoodPitches'),
 createCheckbox('Show Only Bad Pitches', 'showOnlyBadPitches')
         ),
@@ -533,13 +608,14 @@ className: 'settings-btn',
 onclick: () => this.toggleSettings()
           }, '⚙')
         ),
-createElement('div', { className: 'header__controls' },
-createElement('span', { className: 'chip back-chip', onclick: () => this.showLineup(this.selectedTeam) }, '← Lineup'),
-createElement('span', { className: 'chip', onclick: () => { 
-this.selectedBatterIndex = (this.selectedBatterIndex - 1 + lineup.length) % lineup.length;
-this.render(); 
+        createElement('div', { className: 'header__controls' },
+          createElement('span', { className: 'chip back-chip', onclick: () => this.showLineup(this.selectedTeam) }, '← Lineup'),
+          createElement('span', { className: 'chip print-chip', onclick: () => this.printCurrentCard() }, 'Print'),
+          createElement('span', { className: 'chip', onclick: () => { 
+            this.selectedBatterIndex = (this.selectedBatterIndex - 1 + lineup.length) % lineup.length;
+            this.render(); 
           } }, '◀ Prev'),
-createElement('span', { className: 'chip', onclick: () => { 
+          createElement('span', { className: 'chip', onclick: () => { 
 this.selectedBatterIndex = (this.selectedBatterIndex + 1) % lineup.length;
 this.render(); 
           } }, 'Next ▶')
